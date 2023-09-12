@@ -1,0 +1,23 @@
+{
+	"name": "tokyo-olympic-factory-gtc",
+	"properties": {
+		"globalParameters": {
+			"datasetNames": {
+				"type": "array",
+				"value": [
+					"Athletes",
+					"Coaches",
+					"EntriesGender",
+					"Medals",
+					"Teams"
+				]
+			}
+		}
+	},
+	"location": "francecentral",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "111597fd-3bf2-4ee9-951f-36452faae5f7",
+		"tenantId": "f80f89f5-99a9-46a2-b233-cd006a9387bf"
+	}
+}

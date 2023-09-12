@@ -1,0 +1,102 @@
+{
+	"name": "data-ingestion",
+	"properties": {
+		"activities": [
+			{
+				"name": "file name",
+				"description": "Ingesting all files of the project",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().globalParameters.datasetNames",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"batchCount": 10,
+					"activities": [
+						{
+							"name": "Ingest data",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings",
+										"copyBehavior": "PreserveHierarchy"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "github_raw_data",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "adls_raw_data",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": {
+											"value": "@toLower(item())",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"datasetNames": {
+				"type": "Array"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-09-12T11:26:00Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
